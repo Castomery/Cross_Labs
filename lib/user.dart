@@ -4,17 +4,22 @@ import 'package:lab1/IListItem.dart';
 class User implements IListItem {
   final int id;
   final String name;
-  final String email;
   final int age;
+  final String email;
 
-  User({required this.id, required this.name, required this.email, required this.age});
+  User({
+    required this.id,
+    required this.name,
+    required this.age,
+    required this.email,
+  });
 
-  @override
-  String displayTitle() => name;
-
-  @override
-  String displaySubtitle() => "$email, age: $age";
-
-  @override
-  IconData displayIcon() => Icons.person;
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'],
+      name: json['firstName'],
+      age: json['age'],
+      email: json['email'],
+    );
+  }
 }

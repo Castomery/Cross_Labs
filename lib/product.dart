@@ -6,14 +6,17 @@ class Product implements IListItem {
   final String name;
   final double price;
 
-  Product({required this.id, required this.name, required this.price});
+  Product({
+    required this.id,
+    required this.name,
+    required this.price,
+  });
 
-  @override
-  String displayTitle() => name;
-
-  @override
-  String displaySubtitle() => "Price: $price ₴";
-
-  @override
-  IconData displayIcon() => Icons.shopping_cart;
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      id: json['id'],
+      name: json['title'],
+      price: (json['price'] as num).toDouble(),
+    );
+  }
 }
