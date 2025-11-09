@@ -1,32 +1,32 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:lab1/IListItem.dart';
-import '../product.dart';
+import '../post.dart';
 import '../user.dart';
 
 class ApiService {
 
   static Future<List<IListItem>> loadData() async {
-    final productRes = await http.get(
-      Uri.parse('https://dummyjson.com/products/category/smartphones'),
+    final postRes = await http.get(
+      Uri.parse('https://dummyjson.com/posts?limit=10'),
     );
 
     final userRes = await http.get(
       Uri.parse('https://dummyjson.com/users?limit=10'),
     );
 
-    final productData = jsonDecode(productRes.body);
+    final postData = jsonDecode(postRes.body);
     final userData = jsonDecode(userRes.body);
 
-    List<Product> products = (productData['products'] as List)
-        .map((p) => Product.fromJson(p))
+    List<Post> posts = (postData['posts'] as List)
+        .map((p) => Post.fromJson(p))
         .toList();
 
     List<User> users = (userData['users'] as List)
         .map((u) => User.fromJson(u))
         .toList();
 
-    final combined = [...products, ...users];
+    final combined = [...posts, ...users];
 
     combined.shuffle();
 

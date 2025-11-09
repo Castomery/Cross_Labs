@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import './data.dart';
-import './product.dart';
+import './post.dart';
 import './user.dart';
 
 void main() {
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white24),
       ),
       routes: {
         '/': (context) => const HomePage(),
@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> {
                 itemBuilder: (context, index) {
                   final item = items[index];
 
-                  if (item is Product) return ProductCard(product: item);
+                  if (item is Post) return PostCard(post: item);
                   if (item is User) return UserCard(user: item);
 
                   return const SizedBox.shrink();
@@ -105,43 +105,74 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class ProductCard extends StatelessWidget {
-  final Product product;
+class PostCard extends StatelessWidget {
+  final Post post;
 
-  const ProductCard({super.key, required this.product});
+  const PostCard({super.key, required this.post});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.orange[50],
+      color: Colors.green[50],
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: Padding(
         padding: const EdgeInsets.all(12),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(Icons.shopping_cart, size: 40, color: Colors.orange),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            // --- Title ---
+            Text(
+              post.title,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            // --- Body ---
+            Text(
+              post.body,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 14, color: Colors.black87),
+            ),
+
+            const SizedBox(height: 8),
+
+            // --- Tags ---
+            Wrap(
+              spacing: 6,
+              children: post.tags
+                  .map((tag) => Chip(
+                label: Text(tag),
+                backgroundColor: Colors.lightGreen[100],
+              ))
+                  .toList(),
+            ),
+
+            const SizedBox(height: 10),
+
+            // --- Reactions and Views ---
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(product.name,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    )),
-                const SizedBox(height: 5),
-                RichText(
-                  text: TextSpan(
-                    style: const TextStyle(fontSize: 16, color: Colors.black),
-                    children: [
-                      const TextSpan(text: "Price: "),
-                      TextSpan(
-                        text: "${product.price} ₴",
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
+                Row(children: [
+                  const Icon(Icons.thumb_up, size: 18, color: Colors.green),
+                  const SizedBox(width: 4),
+                  Text("${post.likes}"),
+                  const SizedBox(width: 12),
+                  const Icon(Icons.thumb_down, size: 18, color: Colors.red),
+                  const SizedBox(width: 4),
+                  Text("${post.dislikes}"),
+                ]),
+                Row(children: [
+                  const Icon(Icons.visibility, size: 18, color: Colors.blueGrey),
+                  const SizedBox(width: 4),
+                  Text("${post.views}"),
+                ]),
               ],
             ),
           ],
@@ -159,7 +190,7 @@ class UserCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.blue[50],
+      color: Colors.deepOrangeAccent[100],
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: ListTile(
         leading: CircleAvatar(
